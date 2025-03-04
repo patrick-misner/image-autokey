@@ -28,14 +28,13 @@ void typeString(const char *str) {
     }
 }
 
-//void setAllPinsLow() {
-//    digitalWrite(P32, LOW);
-//    digitalWrite(P15, LOW);
-//    digitalWrite(P17, LOW);
-//    digitalWrite(P32, LOW);
-//    digitalWrite(P31, LOW);
-//    delay(25);
-//}
+// Function to Key press and Delay
+void pressKey(uint8_t key) {
+    Keyboard_press(key);
+    delay(25);  // Short delay to simulate a real key press
+    Keyboard_release(key);
+    delay(475)
+}
 
 // Check if P32 and P14 are shorted
 bool checkIfOpt1Shorted() {
