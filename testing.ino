@@ -28,12 +28,18 @@ void typeString(const char *str) {
     }
 }
 
-// Function to Key press and Delay
-void pressKey(uint8_t key) {
+// Function to press key and delay
+void typeKey(uint8_t key) {
     Keyboard_press(key);
     delay(25);  // Short delay to simulate a real key press
     Keyboard_release(key);
-    delay(475)
+    delay(475);
+}
+
+// Function to Type Character and delay
+void typeCharacter(char c) {
+    Keyboard_write(c);  // Writes the character as if typed on a keyboard
+    delay(500);  // Short delay to simulate natural typing
 }
 
 // Check if P32 and P14 are shorted
