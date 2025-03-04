@@ -106,19 +106,19 @@ void setup() {
     bool opt4IsShorted = checkIfOpt4Shorted();
 
     if (opt1IsShorted) {
-      typeString("OPTION 1 GOBBLE");
+      typeString("OPTION 1");
     }
 
     if (opt2IsShorted) {
-      typeString("OPTION 2 GOBBLE");
+      typeString("OPTION 2");
     }
 
     if (opt3IsShorted) {
-      typeString("OPTION 3 GOBBLE");
+      typeString("OPTION 3");
     }
 
     if (opt4IsShorted) {
-      typeString("OPTION 4 GOBBLE");
+      typeString("OPTION 4");
     }
     
     Keyboard_press(KEY_RETURN);  // HID Code for Enter
