@@ -209,7 +209,7 @@ void setup() {
     checkModel4();
     checkModel5();
     checkOption1();
-    checkTopion2();
+    checkOption2();
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
     pinMode(P32, OUTPUT);
