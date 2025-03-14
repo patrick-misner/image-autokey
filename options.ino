@@ -17,42 +17,42 @@
 #define P34 34  // Define P34 pin
 
 // Variables
-#define IMG_PW "imagePWORD"
-#define WIN_USR = "USERNAME";
-#define WIN_PW = "PASSWORD";
+#define IMG_PW "imagePWORD";
+#define WIN_USR "USERNAME";
+#define WIN_PW "PASSWORD";
 
 // Model 1 parameters
-const char* model1BootKey = "KEY_F12";
+const uint8_t model1BootKey = KEY_F12;
 unsigned long model1BootDelay = 5000;
 int model1DownArrow = 1;
-unsigned long model1LoginDelay = 50000;
+unsigned long model1LoginDelay = 960000;
 
 // Model 2 parameters
-const char* model2BootKey = "KEY_F12";
+const uint8_t model2BootKey = KEY_F12;
 unsigned long model2BootDelay = 5000;
 int model2DownArrow = 2;
-unsigned long model2LoginDelay = 50000;
+unsigned long model2LoginDelay = 615000;
 
 // Model 3 parameters
-const char* model3BootKey = "KEY_F9";
+const uint8_t model3BootKey = KEY_F9;
 unsigned long model3BootDelay = 5000;
 int model3DownArrow = 2;
-unsigned long model3LoginDelay = 50000;
+unsigned long model3LoginDelay = 960000;
 
 // Model 4 parameters
-const char* model4BootKey = "KEY_F9";
+const uint8_t model4BootKey = KEY_F9;
 unsigned long model4BootDelay = 5000;
 int model4DownArrow = 2;
-unsigned long model4LoginDelay = 50000;
+unsigned long model4LoginDelay = 960000;
 
 // Model 5 parameters
-const char* model5BootKey = "KEY_F9";
+const uint8_t model5BootKey = KEY_F9;
 unsigned long model5BootDelay = 5000;
 int model5DownArrow = 2;
-unsigned long model5LoginDelay = 50000;
+unsigned long model5LoginDelay = 960000;
 
 // Pointers to hold the selected model parameters
-const char* bootKey;
+uint8_t bootKey;
 unsigned long bootDelay;
 int downArrow;
 unsigned long loginDelay;
@@ -93,15 +93,18 @@ void typeKey(uint8_t key) {
     Keyboard_press(key);
     delay(25);
     Keyboard_release(key);
-    delay(150)
+    delay(150);
     digitalWrite(LED_BUILTIN, HIGH);
     delay(325);
 }
 
 // Function to type a single character (Maybe not needed?)
 void typeCharacter(char c) {
+    digitalWrite(LED_BUILTIN, LOW);
     Keyboard_write(c);  // Writes the character as if typed on a keyboard
-    delay(500);  // Short delay to simulate natural typing
+    delay(150);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(350);  // Short delay to simulate natural typing
 }
 
 void checkModel1() {
@@ -134,11 +137,10 @@ void checkModel2() {
 
 void checkModel3() {
     delay(50);
-    digitalWrite(P17, LOW);
-    delay(50);
-    bool opt3IsShorted = digitalRead(P16);
     digitalWrite(P15, LOW);
-    digitalWrite(P17, HIGH);
+    delay(50);
+    bool opt3IsShorted = digitalRead(P16) == LOW;
+    digitalWrite(P15, HIGH);
     delay(50);
     if (opt3IsShorted) {
         bootKey = model3BootKey;
@@ -150,8 +152,10 @@ void checkModel3() {
 
 void checkModel4() {
     delay(50);
-    bool opt4IsShorted = digitalRead(P16);
     digitalWrite(P17, LOW);
+    delay(50);
+    bool opt4IsShorted = digitalRead(P16) == LOW;
+    digitalWrite(P17, HIGH);
     delay(50);
     if (opt4IsShorted) {
         bootKey = model4BootKey;
@@ -227,21 +231,87 @@ void setup() {
     pinMode(P34, OUTPUT);
     delay(5000);  // Initial delay to ensure USB is ready
 
-
-    // Type bootKey for 24 seconds (some models take this long to reach)
+    // STEP 1
+    // Type bootKey for 24 seconds (some models take this long to reach) typeKey takes 500ms to complete
     for (int i = 0; i < 24 * 2; i++) {
         typeKey(bootKey);
     }
 
-    typeString(optionStep1);
-    typeString(optionStep2);
-    typeString(optionStep3);
-    typeString("I want this to work");
-    typeKey(KEY_RETURN);
-    typeString("I want this and work reliably");
+    // Enter Down Arrow as many times as model needs
+    for (int i = 0; i < downArrow; i++) {
+    typeKey(KEY_DOWN_ARROW);
+    }
+
     typeKey(KEY_RETURN);
 
-}  // <-- Closing brace for setup()
+
+    // STEP 2 WIN PE
+    //Wait for WinPE and Image Prompts to Load
+    delay(36000);
+
+    // Enter WinPE Prompts
+    typeString(optionStep1);
+    typeKey(KEY_RETURN);
+    typeString(optionStep2);
+    typeKey(KEY_RETURN);
+    typeString(optionStep3);
+    typeKey(KEY_RETURN);
+
+
+
+    // Step 3  Login to Windows
+    delay(bootDelay);
+    typeKey(KEY_RETURN);
+    typeString(WIN_USR);
+    typeKey(KEY_TAB);
+    typeString(WIN_PW);
+    typeKey(KEY_RETURN);
+    delay(32000);
+
+    //Try again with two Returns
+    typeKey(KEY_RETURN);
+    typeKey(KEY_RETURN);
+    typeString(WIN_USR);
+    typeKey(KEY_TAB);
+    typeString(WIN_PW);
+    typeKey(KEY_RETURN);
+
+
+    // Step 4 Shutdown PC
+    delay(480000);
+    Keyboard_press(KEY_LEFT_GUI);
+    delay(250);
+    Keyboard_press('x'); 
+    delay(50);
+    Keyboard_release('x'); 
+    Keyboard_release(KEY_LEFT_GUI);
+    delay(250);
+    Keyboard_press('u'); 
+    delay(50);
+    Keyboard_release('u'); 
+    delay(250);
+    Keyboard_press('u'); 
+    delay(50);
+    Keyboard_release('u'); 
+
+    // try to shut down PC again.
+    delay(30000);
+    Keyboard_press(KEY_LEFT_GUI);
+    delay(250);
+    Keyboard_press('x'); 
+    delay(50);
+    Keyboard_release('x'); 
+    Keyboard_release(KEY_LEFT_GUI);
+    delay(250);
+    Keyboard_press('u'); 
+    delay(50);
+    Keyboard_release('u'); 
+    delay(250);
+    Keyboard_press('u'); 
+    delay(50);
+    Keyboard_release('u'); 
+
+}
 
 void loop() {
     // Example usage
